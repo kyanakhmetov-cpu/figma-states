@@ -32,7 +32,7 @@ const run = (args, env = process.env, options = {}) => {
 const databaseUrl = process.env.DATABASE_URL || "";
 const prismaDatabaseUrl = process.env.PRISMA_DATABASE_URL || "";
 const postgresUrl = process.env.POSTGRES_URL || "";
-const effectiveUrl = databaseUrl || postgresUrl || prismaDatabaseUrl;
+const effectiveUrl = postgresUrl || databaseUrl || prismaDatabaseUrl;
 
 log(`DATABASE_URL set: ${Boolean(databaseUrl)}`);
 log(`POSTGRES_URL set: ${Boolean(postgresUrl)}`);

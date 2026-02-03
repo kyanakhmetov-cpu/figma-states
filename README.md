@@ -63,10 +63,12 @@ pnpm test:e2e
 Images are stored in Vercel Blob. Set `BLOB_READ_WRITE_TOKEN` in your environment.
 
 ## Deploy to Vercel
-1) Create a Postgres database in Vercel Storage and set `DATABASE_URL` to the `postgres://...` connection string.
-2) Create a Vercel Blob store and set `BLOB_READ_WRITE_TOKEN`.
-3) Add `UPLOAD_MAX_SIZE_MB` (recommended `4`).
-4) Deploy. Vercel uses `vercel-build` to run migrations and build.
+1) Create a Postgres database in Vercel Storage.
+2) Set `POSTGRES_URL` to the `postgres://...` connection string for migrations.
+3) Set `DATABASE_URL` to the `prisma+postgres://...` Accelerate URL (recommended for runtime).
+4) Create a Vercel Blob store and set `BLOB_READ_WRITE_TOKEN`.
+5) Add `UPLOAD_MAX_SIZE_MB` (recommended `4`).
+6) Deploy. Vercel uses `vercel-build` to run migrations and build.
 
 If `DATABASE_URL` is set to a `prisma+postgres://` Accelerate URL, migrations are skipped during build. Use a direct
 `postgres://` connection string for migrations.
