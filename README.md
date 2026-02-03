@@ -30,6 +30,7 @@ Open http://localhost:3000
 ## Environment variables
 ```
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 BLOB_READ_WRITE_TOKEN=""
 UPLOAD_MAX_SIZE_MB=4
 ```
@@ -64,9 +65,10 @@ Images are stored in Vercel Blob. Set `BLOB_READ_WRITE_TOKEN` in your environmen
 
 ## Deploy to Vercel
 1) Create a Postgres database in Vercel Storage and set `DATABASE_URL`.
-2) Create a Vercel Blob store and set `BLOB_READ_WRITE_TOKEN`.
-3) Add `UPLOAD_MAX_SIZE_MB` (recommended `4`).
-4) Deploy. Vercel uses `vercel-build` to run migrations and build.
+2) Set `DIRECT_URL` to the non-pooling connection string from Vercel Postgres.
+3) Create a Vercel Blob store and set `BLOB_READ_WRITE_TOKEN`.
+4) Add `UPLOAD_MAX_SIZE_MB` (recommended `4`).
+5) Deploy. Vercel uses `vercel-build` to run migrations and build.
 
 ## Notes on pnpm builds
 If pnpm blocks dependency build scripts (e.g., Prisma or esbuild), run:
