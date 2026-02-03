@@ -372,8 +372,10 @@ export function t(
   lang: Lang,
   key: TranslationKey,
   vars?: Record<string, string | number>,
-) {
-  const template = translations[lang][key] ?? translations.en[key] ?? key;
+): string {
+  const template = String(
+    translations[lang][key] ?? translations.en[key] ?? key,
+  );
   if (!vars) return template;
   return Object.entries(vars).reduce((acc, [varKey, value]) => {
     return acc.replaceAll(`{${varKey}}`, String(value));
