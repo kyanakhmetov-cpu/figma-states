@@ -7,7 +7,8 @@ const log = (message) => {
   console.log(`[vercel-build] ${message}`);
 };
 
-const run = (args, env = process.env) => {
+const run = (args, env = process.env, options = {}) => {
+  const { allowFailure = false } = options;
   log(`$ ${pnpmCmd} ${args.join(" ")}`);
   const result = spawnSync(pnpmCmd, args, {
     env,
@@ -20,8 +21,12 @@ const run = (args, env = process.env) => {
   }
 
   if (typeof result.status === "number" && result.status !== 0) {
-    process.exit(result.status);
+    if (!allowFailure) {
+      process.exit(result.status);
+    }
   }
+
+  return result.status ?? 0;
 };
 
 const databaseUrl = process.env.DATABASE_URL || "";
@@ -48,7 +53,14 @@ if (!effectiveUrl) {
   };
 
   log("Running prisma migrate deploy.");
-  run(["prisma", "migrate", "deploy"], env);
+  const migrateStatus = run(["prisma", "migrate", "deploy"], env, {
+    allowFailure: true,
+  });
+
+  if (migrateStatus !== 0) {
+    log("prisma migrate deploy failed. Falling back to prisma db push.");
+    run(["prisma", "db", "push"], env);
+  }
 }
 
 log("Running next build.");
