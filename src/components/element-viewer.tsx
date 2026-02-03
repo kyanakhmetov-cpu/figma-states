@@ -342,7 +342,7 @@ export function ElementViewer({
                     </Button>
                   </div>
                   {items.map((state) => (
-                    <Card key={state.id} className="space-y-3 p-4">
+                    <Card key={state.id} className="gap-0 space-y-3 p-4">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="space-y-1">
                           <p className="text-sm font-medium">{state.title}</p>
@@ -369,16 +369,20 @@ export function ElementViewer({
                           </div>
                         </div>
                       </div>
-                      <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-sm leading-relaxed">
-                        {state.message}
-                      </div>
-                      <div>
+                      <div
+                        className={cn(
+                          "flex items-start gap-3 rounded-lg border p-3 text-sm leading-relaxed",
+                          STATE_TYPE_STYLES[state.type].className,
+                        )}
+                      >
+                        <p className="flex-1">{state.message}</p>
                         <Button
-                          variant="secondary"
-                          size="sm"
+                          variant="ghost"
+                          size="icon-xs"
                           onClick={() => copyState(state, "message")}
+                          aria-label={t("state.copyMessage")}
                         >
-                          {t("state.copyMessage")}
+                          <Copy className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     </Card>
