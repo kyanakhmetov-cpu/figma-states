@@ -160,6 +160,8 @@ export const translations = {
     "viewer.searchPlaceholder": "Search title, message, condition...",
     "viewer.searchLabel": "Search states",
     "viewer.showing": "Showing {shown} of {total}",
+    "viewer.filtersLabel": "Filter by type",
+    "viewer.filtersAll": "All",
     "viewer.noStates":
       "No states yet. Share this link once the copy is ready.",
     "viewer.noMatch": "No states match your search.",
@@ -341,6 +343,8 @@ export const translations = {
     "viewer.searchPlaceholder": "Поиск по названию, тексту, условию...",
     "viewer.searchLabel": "Поиск состояний",
     "viewer.showing": "Показано {shown} из {total}",
+    "viewer.filtersLabel": "Фильтр по типам",
+    "viewer.filtersAll": "Все",
     "viewer.noStates": "Пока нет состояний. Поделитесь ссылкой позже.",
     "viewer.noMatch": "Нет состояний по запросу.",
     "viewer.copyGroup": "Скопировать группу",

@@ -18,6 +18,9 @@ import { RightPanel } from "@/components/right-panel";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/components/lang-provider";
+import { stateTypeLabel } from "@/lib/i18n";
+import { STATE_TYPE_STYLES } from "@/lib/serialization";
+import { cn } from "@/lib/utils";
 
 type ElementViewerProps = {
   element: SerializedElement;
@@ -34,11 +37,18 @@ export function ElementViewer({
 }: ElementViewerProps) {
   const { t, lang, setLang } = useLang();
   const [query, setQuery] = useState("");
+  const [selectedTypes, setSelectedTypes] = useState<
+    SerializedState["type"][]
+  >([]);
   const normalizedQuery = query.trim().toLowerCase();
 
   const filteredStates = useMemo(() => {
-    if (!normalizedQuery) return states;
-    return states.filter((state) => {
+    let next = states;
+    if (selectedTypes.length > 0) {
+      next = next.filter((state) => selectedTypes.includes(state.type));
+    }
+    if (!normalizedQuery) return next;
+    return next.filter((state) => {
       const haystack = [
         state.title,
         state.message,
@@ -50,7 +60,7 @@ export function ElementViewer({
         .toLowerCase();
       return haystack.includes(normalizedQuery);
     });
-  }, [normalizedQuery, states]);
+  }, [normalizedQuery, states, selectedTypes]);
 
   const grouped = useMemo(() => {
     const groups: Record<string, SerializedState[]> = {};
@@ -124,6 +134,16 @@ export function ElementViewer({
     }
     return t("viewer.groupCount", { count });
   };
+  const typeOptions = useMemo(
+    () =>
+      (Object.keys(STATE_TYPE_STYLES) as SerializedState["type"][]).map(
+        (type) => ({
+          value: type,
+          label: stateTypeLabel(lang, type),
+        }),
+      ),
+    [lang],
+  );
 
   return (
     <div className="min-h-screen">
@@ -246,6 +266,47 @@ export function ElementViewer({
                 })}
               </div>
             </div>
+            <div className="space-y-2">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                {t("viewer.filtersLabel")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedTypes([])}
+                  className={cn(
+                    "border-neutral-200 text-neutral-700/80 hover:bg-neutral-500/10",
+                    selectedTypes.length === 0 &&
+                      "bg-neutral-500/10 text-neutral-700",
+                  )}
+                >
+                  {t("viewer.filtersAll")}
+                </Button>
+                {typeOptions.map((option) => {
+                  const active = selectedTypes.includes(option.value);
+                  const style = STATE_TYPE_STYLES[option.value].filter;
+                  return (
+                    <Button
+                      key={option.value}
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setSelectedTypes((prev) => {
+                          if (active) {
+                            return prev.filter((item) => item !== option.value);
+                          }
+                          return [...prev, option.value];
+                        })
+                      }
+                      className={cn(active ? style.active : style.inactive)}
+                    >
+                      {option.label}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <Separator />
@@ -307,24 +368,19 @@ export function ElementViewer({
                             ) : null}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => copyState(state, "message")}
-                          >
-                            {t("state.copyMessage")}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => copyState(state, "title-message")}
-                          >
-                            {t("state.copyLabelMessage")}
-                          </Button>
-                        </div>
                       </div>
-                      <p className="text-sm leading-relaxed">{state.message}</p>
+                      <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-sm leading-relaxed">
+                        {state.message}
+                      </div>
+                      <div>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => copyState(state, "message")}
+                        >
+                          {t("state.copyMessage")}
+                        </Button>
+                      </div>
                     </Card>
                   ))}
                 </div>
