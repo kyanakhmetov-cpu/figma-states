@@ -333,7 +333,9 @@ export function ElementViewer({
           </div>
         </div>
 
-        <RightPanel element={element} states={states} readOnly />
+        <div className="lg:sticky lg:top-10 lg:self-start">
+          <RightPanel element={element} states={states} readOnly />
+        </div>
       </div>
     </div>
   );
