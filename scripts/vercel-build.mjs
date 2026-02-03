@@ -26,16 +26,21 @@ const run = (args, env = process.env) => {
 
 const databaseUrl = process.env.DATABASE_URL || "";
 const prismaDatabaseUrl = process.env.PRISMA_DATABASE_URL || "";
-const effectiveUrl = databaseUrl || prismaDatabaseUrl;
+const postgresUrl = process.env.POSTGRES_URL || "";
+const effectiveUrl = databaseUrl || postgresUrl || prismaDatabaseUrl;
 
 log(`DATABASE_URL set: ${Boolean(databaseUrl)}`);
+log(`POSTGRES_URL set: ${Boolean(postgresUrl)}`);
 log(`PRISMA_DATABASE_URL set: ${Boolean(prismaDatabaseUrl)}`);
+
+log("Running prisma generate.");
+run(["prisma", "generate"]);
 
 if (!effectiveUrl) {
   log("No database URL found. Skipping prisma migrate deploy.");
 } else if (effectiveUrl.startsWith("prisma+postgres://")) {
-  log("DATABASE_URL uses prisma+postgres://. Skipping prisma migrate deploy.");
-  log("Set DATABASE_URL to a postgres:// connection string to run migrations.");
+  log("Database URL uses prisma+postgres://. Skipping prisma migrate deploy.");
+  log("Set DATABASE_URL or POSTGRES_URL to a postgres:// connection string to run migrations.");
 } else {
   const env = {
     ...process.env,
