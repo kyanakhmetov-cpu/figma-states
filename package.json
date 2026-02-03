@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "vercel-build": "echo \"STEP: prisma migrate deploy\" && prisma migrate deploy && echo \"STEP: next build\" && next build",
+    "vercel-build": "node scripts/vercel-build.mjs",
     "lint": "eslint .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

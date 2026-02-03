@@ -68,6 +68,9 @@ Images are stored in Vercel Blob. Set `BLOB_READ_WRITE_TOKEN` in your environmen
 3) Add `UPLOAD_MAX_SIZE_MB` (recommended `4`).
 4) Deploy. Vercel uses `vercel-build` to run migrations and build.
 
+If `DATABASE_URL` is set to a `prisma+postgres://` Accelerate URL, migrations are skipped during build. Use a direct
+`postgres://` connection string for migrations.
+
 ## Notes on pnpm builds
 If pnpm blocks dependency build scripts (e.g., Prisma or esbuild), run:
 ```bash
