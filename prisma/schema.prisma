@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ElementStateType {
+  error
+  warning
+  success
+  info
+  helper
+  empty
+  accessibility
+  other
+}
+
+model Project {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  elements    FigmaElement[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model FigmaElement {
+  id           String        @id @default(cuid())
+  title        String
+  figmaUrl     String
+  figmaFileKey String?
+  figmaNodeId  String?
+  imagePath    String
+  imageName    String
+  imageType    String
+  imageSize    Int
+  projectId    String?
+  project      Project?      @relation(fields: [projectId], references: [id])
+  states       ElementState[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model ElementState {
+  id        String           @id @default(cuid())
+  elementId String
+  element   FigmaElement     @relation(fields: [elementId], references: [id], onDelete: Cascade)
+  type      ElementStateType
+  title     String
+  message   String
+  condition String?
+  severity  String?
+  locale    String           @default("en")
+  sortOrder Int              @default(0)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([elementId, sortOrder])
+}
